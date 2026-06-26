@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: cashbattle_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cashbattle
+    ports:
+      - "5433:5432"
+    volumes:
+      - cashbattle_pgdata:/var/lib/postgresql/data
+      - ./Database/migrations:/docker-entrypoint-initdb.d
+
+volumes:
+  cashbattle_pgdata:
