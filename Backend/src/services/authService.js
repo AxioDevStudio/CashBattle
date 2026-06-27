@@ -2,7 +2,16 @@ import { createUser, findUserByEmail, findUserById } from "../models/userModel.j
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { generateToken } from "../utils/generateToken.js";
 
-export async function registerService({ name, email, password }) {
+export async function registerService({
+    name,
+    email,
+    password,
+    monthlyIncome,
+    otherIncome,
+    monthlyGoal,
+    goalCategory,
+    competitionMode
+}) {
     if (!name || !email || !password) {
         throw new Error("Nome, email e senha são obrigatórios.");
     }
@@ -18,7 +27,12 @@ export async function registerService({ name, email, password }) {
     const user = await createUser({
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        monthlyIncome,
+        otherIncome,
+        monthlyGoal,
+        goalCategory,
+        competitionMode
     });
 
     const token = generateToken(user.id);

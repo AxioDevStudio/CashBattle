@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Trophy } from "lucide-react";
 
-import "../styles/login.css";
+import "../../styles/auth.css";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");

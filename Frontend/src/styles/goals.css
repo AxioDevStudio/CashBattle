@@ -1,0 +1,60 @@
+.goals-page {
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 24px 18px;
+    background: #080a0f;
+    color: white;
+}
+
+.goal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 24px 0;
+}
+
+.goal-form input,
+.goal-form select {
+    height: 52px;
+    border: 1px solid #2b313d;
+    border-radius: 16px;
+    background: #141821;
+    color: white;
+    padding: 0 16px;
+}
+
+.goal-form button {
+    height: 56px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f8e08e, #c8961d);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.goal-item {
+    padding: 18px;
+    border-radius: 18px;
+    background: #141821;
+    border: 1px solid #2b313d;
+}
+
+.goal-mini-progress {
+    margin-top: 10px;
+    height: 8px;
+    background: #2b313d;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.goal-mini-progress div {
+    height: 100%;
+    background: linear-gradient(90deg, #f8e08e, #c8961d);
+}

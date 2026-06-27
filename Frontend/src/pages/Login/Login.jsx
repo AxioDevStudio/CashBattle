@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, Trophy } from "lucide-react";
 
-import api from "../services/api";
-import "../styles/login.css";
+import api from "../../services/api";
+import "../../styles/auth.css";
 
 function Login() {
     const navigate = useNavigate();
