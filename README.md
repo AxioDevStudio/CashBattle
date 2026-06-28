@@ -2,139 +2,179 @@
 
 # CashBattle
 
-### Plataforma de gamificação para educação financeira
+### Plataforma Gamificada de Educação Financeira
 
-Aplicação desenvolvida para auxiliar usuários no controle financeiro por meio de objetivos, desafios e mecânicas de gamificação.
+Controle suas finanças, alcance metas, evolua através de conquistas e transforme sua organização financeira em uma experiência motivadora.
+
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-blue)
+![React](https://img.shields.io/badge/React-18-61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791)
 
 </div>
 
 ---
 
-# Visão Geral
+# Sobre
 
-O **CashBattle** é uma plataforma de finanças pessoais que une organização financeira e gamificação para incentivar hábitos saudáveis de economia.
+O **CashBattle** é uma plataforma de finanças pessoais baseada em gamificação, desenvolvida para incentivar hábitos financeiros saudáveis por meio de desafios, objetivos, recompensas e acompanhamento da evolução do usuário.
 
-A aplicação permite registrar receitas, despesas e valores economizados, acompanhar metas financeiras e visualizar a evolução do usuário através de indicadores como experiência (XP), níveis, conquistas e sequência de dias (streak).
+O sistema permite registrar movimentações financeiras, acompanhar metas de economia, visualizar estatísticas e evoluir através de um sistema de XP, níveis, conquistas e interações sociais.
 
-O projeto é dividido em uma arquitetura cliente-servidor composta por:
+Arquitetura do projeto:
 
-- Frontend desenvolvido em React
-- Backend desenvolvido em Node.js/Express
-- Banco de dados PostgreSQL
+* Frontend em React + Vite
+* Backend em Node.js + Express
+* PostgreSQL
+* Docker
 
 ---
 
-# Funcionalidades Implementadas
+# Funcionalidades
 
 ## Autenticação
 
-- Cadastro de usuários
-- Login com autenticação JWT
-- Recuperação de senha (interface)
-- Persistência da sessão
-- Proteção de rotas autenticadas
+* Cadastro de usuários
+* Login com JWT
+* Recuperação de senha por e-mail
+* Redefinição de senha
+* Sessão persistente
+* Proteção de rotas privadas
 
 ---
 
 ## Dashboard
 
-- Visualização do saldo disponível
-- Receita total
-- Gastos acumulados
-- Valor economizado
-- Meta financeira mensal
-- Barra de progresso da meta
-- Saudação personalizada
-- Navegação entre funcionalidades
-
----
-
-## Transações
-
-Cadastro de movimentações financeiras:
-
-- Receita
-- Despesa
-- Economia
-
-Cada registro possui:
-
-- Valor
-- Categoria
-- Descrição
-- Data
-- Associação opcional com um objetivo financeiro
-
----
-
-## Objetivos Financeiros
-
-Gerenciamento de objetivos personalizados contendo:
-
-- Nome
-- Categoria
-- Valor alvo
-- Valor acumulado
-- Barra de progresso
-
-O progresso dos objetivos é atualizado automaticamente quando uma transação do tipo **economia** é vinculada ao objetivo.
+* Saldo disponível
+* Receitas
+* Despesas
+* Economia acumulada
+* Objetivo mensal
+* Barra de progresso
+* XP
+* Nível
+* Streak
+* Navegação rápida
 
 ---
 
 ## Perfil
 
-- Informações pessoais
-- Foto de perfil
-- XP
-- Nível
-- Sequência de dias (Streak)
-- Estatísticas gerais
-- Objetivos ativos
-- Conquistas desbloqueadas
+* Upload de avatar
+* Remover foto
+* Avatar padrão
+* Editar perfil
+* Alterar senha
+* XP
+* Nível
+* Streak
+* Objetivos ativos
+* Conquistas
 
 ---
 
-## Sistema de Gamificação
+## Transações
 
-Implementado:
+Gerenciamento completo de:
 
-- XP
-- Sistema de níveis
-- Conquistas
-- Objetivos
-- Sequência diária (Streak)
-- Modos de competição
+* Receitas
+* Despesas
+* Economias
+
+Cada movimentação possui:
+
+* Valor
+* Categoria
+* Descrição
+* Data
+* Objetivo associado (opcional)
+
+Também é possível:
+
+* Pesquisar
+* Editar
+* Excluir
+* Filtrar por categoria
 
 ---
 
-# Tecnologias Utilizadas
+## Objetivos Financeiros
+
+* Criar objetivo
+* Editar
+* Excluir
+* Adicionar progresso
+* Barra de progresso
+* Categorias
+
+O progresso é atualizado automaticamente quando uma economia é vinculada ao objetivo.
+
+---
+
+## Feed
+
+Sistema de atividades financeiras contendo:
+
+* Histórico de ações
+* Curtidas
+* Comentários
+* Compartilhamento
+* Atualização automática
+
+Eventos registrados:
+
+* Nova receita
+* Novo gasto
+* Economia registrada
+* Objetivo criado
+* Objetivo concluído
+* Conquistas
+* Evolução do usuário
+
+---
+
+## Gamificação
+
+* XP
+* Sistema de níveis
+* Streak
+* Objetivos
+* Conquistas
+* Modos de competição
+
+---
+
+# Tecnologias
 
 ## Frontend
 
-- React
-- React Router
-- Axios
-- Lucide React
-- CSS
+* React
+* React Router DOM
+* Axios
+* Lucide React
+* CSS3
+* Vite
 
 ## Backend
 
-- Node.js
-- Express
-- JWT
-- bcrypt
-- PostgreSQL
+* Node.js
+* Express
+* JWT
+* bcrypt
+* Multer
+* Resend
+* PostgreSQL
 
 ## Banco de Dados
 
-- PostgreSQL
-- Docker
+* PostgreSQL
+* Docker
 
 ---
 
 # Estrutura do Projeto
 
-```
+```text
 CashBattle
 │
 ├── Backend
@@ -145,6 +185,7 @@ CashBattle
 │   │   ├── models
 │   │   ├── routes
 │   │   ├── services
+│   │   ├── uploads
 │   │   └── utils
 │   └── ...
 │
@@ -152,9 +193,6 @@ CashBattle
 │   ├── src
 │   │   ├── assets
 │   │   ├── components
-│   │   ├── context
-│   │   ├── hooks
-│   │   ├── layouts
 │   │   ├── pages
 │   │   ├── services
 │   │   └── styles
@@ -167,43 +205,50 @@ CashBattle
 
 # Banco de Dados
 
-Atualmente o sistema utiliza as seguintes entidades:
+Principais entidades:
 
-- Users
-- Transactions
-- Goals
+* Users
+* Transactions
+* Goals
+* Feed
+* FeedLikes
+* FeedComments
+* Achievements
 
 Relacionamento simplificado:
 
-```
+```text
 Users
- ├── Transactions
- └── Goals
-      └── Transactions (Savings)
+├── Transactions
+├── Goals
+├── Feed
+├── FeedLikes
+├── FeedComments
+└── Achievements
 ```
 
 ---
 
-# Como Executar
+# Instalação
 
-## 1. Clonar o repositório
+## Clonar
 
 ```bash
 git clone https://github.com/AxioDevStudio/CashBattle.git
+
+cd CashBattle
 ```
 
 ---
 
-## 2. Backend
+## Backend
 
 ```bash
 cd Backend
 npm install
 ```
 
-Configure o arquivo `.env`.
-
-Exemplo:
+Configure o arquivo `.env`:
 
 ```env
 PORT=3001
@@ -215,6 +260,10 @@ DB_PORT=5432
 DB_NAME=cashbattle
 DB_USER=postgres
 DB_PASSWORD=password
+
+RESEND_API_KEY=your_key
+EMAIL_FROM=onboarding@resend.dev
+FRONTEND_URL=http://localhost:5173
 ```
 
 Execute:
@@ -225,7 +274,7 @@ npm run dev
 
 ---
 
-## 3. Frontend
+## Frontend
 
 ```bash
 cd Frontend
@@ -236,9 +285,7 @@ npm run dev
 
 ---
 
-## 4. Banco de Dados
-
-Inicie o container PostgreSQL:
+## Banco de Dados
 
 ```bash
 docker compose up -d
@@ -252,87 +299,74 @@ docker start cashbattle_db
 
 ---
 
-# Funcionalidades em Desenvolvimento
+# Roadmap
 
 ## Financeiro
 
-- Histórico completo de transações
-- Edição de transações
-- Exclusão de transações
-- Parcelamentos
-- Cartões de crédito
-- Investimentos
-- Relatórios
-- Exportação de dados
-
----
+* Histórico avançado
+* Parcelamentos
+* Cartões de crédito
+* Investimentos
+* Relatórios
+* Exportação de dados
 
 ## Objetivos
 
-- Edição de objetivos
-- Exclusão de objetivos
-- Prioridades
-- Datas limite
-- Objetivos compartilhados
-
----
+* Prioridades
+* Datas limite
+* Objetivos compartilhados
 
 ## Gamificação
 
-- Missões diárias
-- Missões semanais
-- Sistema completo de XP
-- Medalhas
-- Loja de recompensas
-- Avatares desbloqueáveis
-
----
+* Missões diárias
+* Missões semanais
+* Loja de recompensas
+* Medalhas especiais
+* Avatares desbloqueáveis
 
 ## Social
 
-- Sistema de amizades
-- Rankings
-- Desafios entre usuários
-- Grupos
-- Feed de atividades
-
----
+* Amigos
+* Ranking global
+* Ranking semanal
+* Desafios
+* Grupos
 
 ## Dashboard
 
-- Indicadores financeiros
-- Gráficos
-- Evolução mensal
-- Gastos por categoria
-- Recomendações inteligentes
-
----
+* Gráficos financeiros
+* Evolução mensal
+* Gastos por categoria
+* Insights inteligentes
 
 ## Inteligência Artificial
 
-Planejado para versões futuras:
-
-- Classificação automática de gastos
-- Sugestões de economia
-- Recomendações financeiras
-- Assistente financeiro baseado em IA
+* Classificação automática de gastos
+* Sugestões de economia
+* Recomendações financeiras
+* Assistente financeiro
 
 ---
 
-# Roadmap
+# Status
 
-| Funcionalidade | Status |
-|---------------|--------|
-| Sistema de autenticação | Concluído |
-| Dashboard inicial | Concluído |
-| Cadastro de transações | Concluído |
-| Objetivos financeiros | Concluído |
-| Perfil do usuário | Concluído |
-| Sistema inicial de gamificação | Concluído |
-| Histórico financeiro | Em desenvolvimento |
-| Rankings | Planejado |
-| Sistema de amizades | Planejado |
-| Missões | Planejado |
-| Feed social | Planejado |
-| Inteligência Artificial | Planejado |
-
+| Funcionalidade          | Status |
+| ----------------------- | :----: |
+| Autenticação            |    ✅   |
+| Recuperação de senha    |    ✅   |
+| Dashboard               |    ✅   |
+| Perfil                  |    ✅   |
+| Upload de avatar        |    ✅   |
+| Receitas                |    ✅   |
+| Despesas                |    ✅   |
+| Economias               |    ✅   |
+| Objetivos               |    ✅   |
+| Feed                    |    ✅   |
+| Curtidas                |    ✅   |
+| Comentários             |    ✅   |
+| Sistema de XP           |    ✅   |
+| Conquistas              |   🟡   |
+| Ranking                 |   🟡   |
+| Amigos                  |   🔜   |
+| Desafios                |   🔜   |
+| Inteligência Artificial |   🔜   |
