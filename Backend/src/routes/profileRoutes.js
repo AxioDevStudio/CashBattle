@@ -8,7 +8,8 @@ import {
     getProfile,
     updateProfileData,
     uploadAvatar,
-    deleteAvatar
+    deleteAvatar,
+    changePassword
 } from "../controllers/profileController.js";
 
 const router = Router();
@@ -23,11 +24,28 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage });
+const fileFilter = (req, file, callback) => {
+    const allowed = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+
+    if (allowed.includes(file.mimetype)) {
+        callback(null, true);
+    } else {
+        callback(new Error("Formato de imagem inválido."));
+    }
+};
+
+const upload = multer({
+    storage,
+    fileFilter,
+    limits: {
+        fileSize: 2 * 1024 * 1024
+    }
+});
 
 router.get("/", authMiddleware, getProfile);
 router.put("/", authMiddleware, updateProfileData);
 router.post("/avatar", authMiddleware, upload.single("avatar"), uploadAvatar);
 router.delete("/avatar", authMiddleware, deleteAvatar);
+router.put("/password", authMiddleware, changePassword);
 
 export default router;

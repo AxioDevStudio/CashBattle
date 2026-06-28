@@ -1,6 +1,9 @@
 import {
     createTransactionService,
     listTransactionsService,
+    findTransactionByIdService,
+    updateTransactionService,
+    deleteTransactionService,
     getTransactionSummaryService
 } from "../services/transactionService.js";
 
@@ -27,6 +30,39 @@ export async function list(req, res) {
     }
 }
 
+export async function update(req, res) {
+    try {
+        const transaction = await updateTransactionService(
+            req.userId,
+            req.params.id,
+            req.body
+        );
+
+        return res.json({
+            message: "Transação atualizada com sucesso.",
+            transaction
+        });
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+export async function remove(req, res) {
+    try {
+        const transaction = await deleteTransactionService(
+            req.userId,
+            req.params.id
+        );
+
+        return res.json({
+            message: "Transação removida com sucesso.",
+            transaction
+        });
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 export async function summary(req, res) {
     try {
         const summaryData = await getTransactionSummaryService(req.userId);
@@ -34,5 +70,18 @@ export async function summary(req, res) {
         return res.json(summaryData);
     } catch (error) {
         return res.status(400).json({ error: error.message });
+    }
+}
+
+export async function findById(req, res) {
+    try {
+        const transaction = await findTransactionByIdService(
+            req.userId,
+            req.params.id
+        );
+
+        return res.json({ transaction });
+    } catch (error) {
+        return res.status(404).json({ error: error.message });
     }
 }

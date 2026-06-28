@@ -2,7 +2,8 @@ import {
     getProfileService,
     updateProfileService,
     uploadAvatarService,
-    removeAvatarService
+    removeAvatarService,
+    changePasswordService
 } from "../services/profileService.js";
 
 export async function getProfile(req, res) {
@@ -48,6 +49,18 @@ export async function deleteAvatar(req, res) {
         return res.json({
             message: "Foto de perfil removida com sucesso.",
             profile
+        });
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+export async function changePassword(req, res) {
+    try {
+        await changePasswordService(req.userId, req.body);
+
+        return res.json({
+            message: "Senha alterada com sucesso."
         });
     } catch (error) {
         return res.status(400).json({ error: error.message });
