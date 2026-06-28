@@ -10,7 +10,10 @@ import {
     User,
     Mail,
     Target,
-    Wallet
+    Wallet,
+    Trophy,
+    Flame,
+    Star
 } from "lucide-react";
 
 import api from "../../services/api";
@@ -21,9 +24,14 @@ function Profile() {
 
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [uploading, setUploading] = useState(false);
 
     const [editOpen, setEditOpen] = useState(false);
     const [passwordOpen, setPasswordOpen] = useState(false);
+
+    const [preview, setPreview] = useState(null);
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
 
     const [form, setForm] = useState({
         name: "",
@@ -41,20 +49,37 @@ function Profile() {
         confirmPassword: ""
     });
 
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
-
     useEffect(() => {
         loadProfile();
     }, []);
 
+    function getToken() {
+        return localStorage.getItem("cashbattle_token");
+    }
+
+    function showMessage(text) {
+        setMessage(text);
+        setError("");
+
+        setTimeout(() => {
+            setMessage("");
+        }, 3000);
+    }
+
+    function showError(text) {
+        setError(text);
+        setMessage("");
+
+        setTimeout(() => {
+            setError("");
+        }, 3000);
+    }
+
     async function loadProfile() {
         try {
-            const token = localStorage.getItem("cashbattle_token");
-
             const response = await api.get("/profile", {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getToken()}`
                 }
             });
 
@@ -71,21 +96,29 @@ function Profile() {
                 goalCategory: data.goal_category || "",
                 competitionMode: data.competition_mode || "solo"
             });
-        } catch (err) {
-            setError("Não foi possível carregar o perfil.");
+
+            localStorage.setItem("cashbattle_user", JSON.stringify(data));
+        } catch {
+            showError("Não foi possível carregar o perfil.");
         } finally {
             setLoading(false);
         }
     }
 
     function getAvatarUrl() {
+        if (preview) return preview;
+
         if (!profile?.avatar_url) return null;
 
         if (profile.avatar_url.startsWith("http")) {
             return profile.avatar_url;
         }
 
-        return `${import.meta.env.VITE_API_FILE_URL || ""}${profile.avatar_url}`;
+        const apiUrl =
+            import.meta.env.VITE_API_FILE_URL ||
+            "http://localhost:3001";
+
+        return `${apiUrl}${profile.avatar_url}`;
     }
 
     async function handleAvatarUpload(event) {
@@ -93,40 +126,50 @@ function Profile() {
 
         if (!file) return;
 
+        if (file.size > 2 * 1024 * 1024) {
+            showError("A imagem deve ter no máximo 2 MB.");
+            return;
+        }
+
+        setPreview(URL.createObjectURL(file));
+
         const data = new FormData();
         data.append("avatar", file);
 
         try {
-            const token = localStorage.getItem("cashbattle_token");
+            setUploading(true);
 
             await api.post("/profile/avatar", data, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${getToken()}`,
                     "Content-Type": "multipart/form-data"
                 }
             });
 
-            setMessage("Foto atualizada com sucesso.");
-            loadProfile();
+            showMessage("Foto atualizada com sucesso.");
+            await loadProfile();
         } catch (err) {
-            setError(err.response?.data?.error || "Erro ao enviar foto.");
+            showError(err.response?.data?.error || "Erro ao enviar foto.");
+        } finally {
+            setUploading(false);
         }
     }
 
     async function removeAvatar() {
-        try {
-            const token = localStorage.getItem("cashbattle_token");
+        if (!window.confirm("Deseja remover sua foto de perfil?")) return;
 
+        try {
             await api.delete("/profile/avatar", {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getToken()}`
                 }
             });
 
-            setMessage("Foto removida.");
-            loadProfile();
-        } catch (err) {
-            setError("Erro ao remover foto.");
+            setPreview(null);
+            showMessage("Foto removida.");
+            await loadProfile();
+        } catch {
+            showError("Erro ao remover foto.");
         }
     }
 
@@ -134,19 +177,17 @@ function Profile() {
         event.preventDefault();
 
         try {
-            const token = localStorage.getItem("cashbattle_token");
-
             await api.put("/profile", form, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getToken()}`
                 }
             });
 
-            setMessage("Perfil atualizado.");
+            showMessage("Perfil atualizado.");
             setEditOpen(false);
-            loadProfile();
+            await loadProfile();
         } catch (err) {
-            setError(err.response?.data?.error || "Erro ao atualizar perfil.");
+            showError(err.response?.data?.error || "Erro ao atualizar perfil.");
         }
     }
 
@@ -154,15 +195,13 @@ function Profile() {
         event.preventDefault();
 
         try {
-            const token = localStorage.getItem("cashbattle_token");
-
             await api.put("/profile/password", passwordForm, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${getToken()}`
                 }
             });
 
-            setMessage("Senha alterada com sucesso.");
+            showMessage("Senha alterada com sucesso.");
             setPasswordOpen(false);
 
             setPasswordForm({
@@ -171,7 +210,7 @@ function Profile() {
                 confirmPassword: ""
             });
         } catch (err) {
-            setError(err.response?.data?.error || "Erro ao alterar senha.");
+            showError(err.response?.data?.error || "Erro ao alterar senha.");
         }
     }
 
@@ -189,7 +228,13 @@ function Profile() {
     }
 
     if (loading) {
-        return <main className="profile-page">Carregando...</main>;
+        return (
+            <main className="profile-page">
+                <section className="profile-loading">
+                    Carregando perfil...
+                </section>
+            </main>
+        );
     }
 
     return (
@@ -222,7 +267,7 @@ function Profile() {
 
                     <input
                         type="file"
-                        accept="image/*"
+                        accept="image/png,image/jpeg,image/jpg,image/webp"
                         onChange={handleAvatarUpload}
                     />
 
@@ -234,10 +279,34 @@ function Profile() {
                 <h1>{profile?.name}</h1>
                 <p>{profile?.email}</p>
 
-                <button className="remove-avatar" onClick={removeAvatar}>
+                <button
+                    className="remove-avatar"
+                    onClick={removeAvatar}
+                    disabled={uploading}
+                >
                     <Trash2 size={16} />
-                    Remover foto
+                    {uploading ? "Enviando..." : "Remover foto"}
                 </button>
+            </section>
+
+            <section className="profile-stats">
+                <article>
+                    <Star size={20} />
+                    <span>XP</span>
+                    <strong>{profile?.xp || 0}</strong>
+                </article>
+
+                <article>
+                    <Trophy size={20} />
+                    <span>Nível</span>
+                    <strong>{profile?.level || 1}</strong>
+                </article>
+
+                <article>
+                    <Flame size={20} />
+                    <span>Streak</span>
+                    <strong>{profile?.streak || 0}</strong>
+                </article>
             </section>
 
             <section className="profile-summary">
@@ -334,7 +403,10 @@ function Profile() {
                             placeholder="Renda mensal"
                             value={form.monthlyIncome}
                             onChange={(e) =>
-                                setForm({ ...form, monthlyIncome: e.target.value })
+                                setForm({
+                                    ...form,
+                                    monthlyIncome: e.target.value
+                                })
                             }
                         />
 
@@ -343,7 +415,10 @@ function Profile() {
                             placeholder="Outras rendas"
                             value={form.otherIncome}
                             onChange={(e) =>
-                                setForm({ ...form, otherIncome: e.target.value })
+                                setForm({
+                                    ...form,
+                                    otherIncome: e.target.value
+                                })
                             }
                         />
 
@@ -352,7 +427,10 @@ function Profile() {
                             placeholder="Meta mensal"
                             value={form.monthlyGoal}
                             onChange={(e) =>
-                                setForm({ ...form, monthlyGoal: e.target.value })
+                                setForm({
+                                    ...form,
+                                    monthlyGoal: e.target.value
+                                })
                             }
                         />
 
@@ -360,9 +438,27 @@ function Profile() {
                             placeholder="Categoria da meta"
                             value={form.goalCategory}
                             onChange={(e) =>
-                                setForm({ ...form, goalCategory: e.target.value })
+                                setForm({
+                                    ...form,
+                                    goalCategory: e.target.value
+                                })
                             }
                         />
+
+                        <select
+                            value={form.competitionMode}
+                            onChange={(e) =>
+                                setForm({
+                                    ...form,
+                                    competitionMode: e.target.value
+                                })
+                            }
+                        >
+                            <option value="solo">Individual</option>
+                            <option value="friends">Com amigos</option>
+                            <option value="groups">Grupo privado</option>
+                            <option value="public">Ranking público</option>
+                        </select>
 
                         <div className="modal-actions">
                             <button type="button" onClick={() => setEditOpen(false)}>

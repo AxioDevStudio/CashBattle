@@ -1,0 +1,36 @@
+.empty-state {
+    padding: 48px 24px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background: var(--color-surface);
+
+    border: 1px dashed var(--color-border);
+
+    border-radius: var(--radius-lg);
+}
+
+.empty-state svg {
+    margin-bottom: 18px;
+    color: var(--color-primary);
+}
+
+.empty-state h3 {
+    margin-bottom: 8px;
+    font-size: 20px;
+}
+
+.empty-state p {
+    max-width: 280px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+.empty-state button {
+    margin-top: 20px;
+}

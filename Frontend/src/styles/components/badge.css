@@ -1,0 +1,31 @@
+.badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.badge-primary{
+
+    background:#E8F1FF;
+
+    color:#3B82F6;
+
+}
+
+.badge-success{
+
+    background:#EAF8EF;
+
+    color:#4F9464;
+
+}

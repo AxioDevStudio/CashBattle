@@ -1,0 +1,17 @@
+.statistic-card{
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:white;
+
+    text-align:center;
+
+}
+
+.statistic-card strong{
+
+    font-size:26px;
+
+}
