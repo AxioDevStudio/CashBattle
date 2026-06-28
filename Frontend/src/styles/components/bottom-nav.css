@@ -1,0 +1,33 @@
+.bottom-nav{
+
+    position:fixed;
+
+    bottom:20px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:380px;
+
+    background:white;
+
+    border-radius:24px;
+
+    display:flex;
+
+    justify-content:space-around;
+
+    padding:10px;
+
+    box-shadow:var(--shadow-soft);
+
+}
+
+.bottom-nav button{
+
+    background:none;
+
+    border:none;
+
+}

@@ -1,27 +1,41 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Trophy } from "lucide-react";
+import api from "../../services/api";
 
-import "../../styles/auth.css";
+import "../../styles/pages/login.css";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [success, setSuccess] = useState("");
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
-        setSuccess(
-            "Se esse email estiver cadastrado, enviaremos instruções para recuperação."
-        );
+        try {
+
+            await api.post("/auth/forgot-password", {
+                email
+            });
+
+            setSuccess(
+                "Se o email estiver cadastrado, enviaremos um link para redefinir sua senha."
+            );
+
+        } catch {
+
+            setSuccess(
+                "Se o email estiver cadastrado, enviaremos um link para redefinir sua senha."
+            );
+
+        }
     }
 
     return (
         <main className="login-page">
+            <section className="login-card">
+                <h3></h3>
             <section className="login-header">
-                <div className="brand-icon">
-                    <Trophy size={36} strokeWidth={2.4} />
-                </div>
 
                 <h1 className="logo-title">
                     CASH <span>BATTLE</span>
@@ -32,7 +46,6 @@ function ForgotPassword() {
                 </p>
             </section>
 
-            <section className="login-card">
                 <h2>Recuperar senha</h2>
 
                 <p className="subtitle">

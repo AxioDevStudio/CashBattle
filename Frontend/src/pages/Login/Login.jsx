@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, Trophy } from "lucide-react";
 
 import api from "../../services/api";
-import "../../styles/auth.css";
+import "../../styles/pages/login.css";
 
 function Login() {
     const navigate = useNavigate();
@@ -41,6 +41,8 @@ function Login() {
 
     return (
         <main className="login-page">
+            <section className="login-card">
+                <h3></h3>
             <section className="login-header">
 
                 <h1 className="logo-title">
@@ -52,7 +54,7 @@ function Login() {
                 </p>
             </section>
 
-            <section className="login-card">
+
                 <h2>Bem-vindo de volta</h2>
                 <p className="subtitle">Faça login para continuar sua jornada.</p>
 
@@ -99,7 +101,6 @@ function Login() {
                 </form>
 
                 <div className="divider">
-                    <span></span>
                 </div>
 
                 <p className="create-account">

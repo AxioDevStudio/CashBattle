@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import api from "../../services/api";
-import "../../styles/auth.css";
+import "../../styles/pages/login.css";
 
 
 function Register() {

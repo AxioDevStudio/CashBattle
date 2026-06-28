@@ -1,13 +1,8 @@
 function StatCard({ title, value, danger }) {
     return (
-        <article className={danger ? "stat-card danger" : "stat-card"}>
+        <article className="stat-card">
             <p>{title}</p>
-            <h3>
-                {Number(value).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                })}
-            </h3>
+            <strong className={danger ? "danger" : ""}>{value}</strong>
         </article>
     );
 }

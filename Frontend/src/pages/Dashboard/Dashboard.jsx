@@ -1,9 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Plus, Target, LogOut } from "lucide-react";
+import {
+    Bell,
+    Home,
+    MessageCircle,
+    Plus,
+    Trophy,
+    User,
+    Wallet,
+    Flame,
+    Star,
+    Shield,
+    PiggyBank,
+    CreditCard,
+    Target,
+} from "lucide-react";
 
 import api from "../../services/api";
-import "../../styles/dashboard.css";
+import "../../styles/pages/dashboard.css";
 
 function Dashboard() {
     const [user, setUser] = useState(null);
@@ -26,8 +40,6 @@ function Dashboard() {
 
                 setUser(userResponse.data.user);
                 setSummary(summaryResponse.data);
-
-                localStorage.setItem("cashbattle_user", JSON.stringify(userResponse.data.user));
             } catch (error) {
                 console.error("Erro ao carregar dashboard:", error);
             } finally {
@@ -38,20 +50,6 @@ function Dashboard() {
         loadDashboard();
     }, []);
 
-    function handleLogout() {
-        localStorage.removeItem("cashbattle_token");
-        localStorage.removeItem("cashbattle_user");
-        navigate("/login");
-    }
-
-    function getGreeting() {
-        const hour = new Date().getHours();
-
-        if (hour < 12) return "Bom dia";
-        if (hour < 18) return "Boa tarde";
-        return "Boa noite";
-    }
-
     function money(value) {
         return Number(value || 0).toLocaleString("pt-BR", {
             style: "currency",
@@ -60,139 +58,159 @@ function Dashboard() {
     }
 
     if (loading) {
-        return (
-            <main className="dashboard-page">
-                <h2>Carregando...</h2>
-            </main>
-        );
+        return <main className="dashboard-page">Carregando...</main>;
     }
 
     if (!user || !summary) {
-        return (
-            <main className="dashboard-page">
-                <h2>Não foi possível carregar seus dados.</h2>
-            </main>
-        );
+        return <main className="dashboard-page">Não foi possível carregar os dados.</main>;
     }
 
     const goal = Number(user.monthly_goal || 0);
     const saved = Number(summary.saving || 0);
     const percent = goal > 0 ? Math.min((saved / goal) * 100, 100) : 0;
 
-    const remaining = Math.max(goal - saved, 0);
-
     return (
         <main className="dashboard-page">
-            <header className="home-header">
+            <header className="dashboard-header">
                 <div>
-                    <span>CashBattle</span>
-                    <h1>{getGreeting()}, {user.name}</h1>
-                    <p className="home-subtitle">
-                        Vamos cuidar do seu dinheiro hoje.
-                    </p>
+                    <h1>Olá, {user.name}</h1>
+                    <p>Visão geral do mês</p>
                 </div>
 
-                <div className="header-actions">
-                    <button
-                        className="profile-button"
-                        onClick={() => navigate("/profile")}
-                        title="Perfil"
-                    >
-                        <User size={20} />
-                    </button>
-
-                    <button
-                        className="logout-button"
-                        onClick={handleLogout}
-                        title="Sair"
-                    >
-                        <LogOut size={20} />
-                    </button>
-                </div>
+                <button className="icon-button">
+                    <Bell size={20} />
+                </button>
             </header>
 
-            <section className="main-balance">
-                <p>Saldo disponível</p>
+            <section className="month-card">
+                <div className="month-grid">
+                    <article>
+                        <span>Renda</span>
+                        <strong>{money(summary.income)}</strong>
+                    </article>
 
-                <h2>{money(summary.balance)}</h2>
+                    <article>
+                        <span>Gastos</span>
+                        <strong className="danger">{money(summary.expense)}</strong>
+                    </article>
 
-                <span>
-                    {percent.toFixed(0)}% da meta mensal concluída
-                </span>
-
-                <div className="progress-bar">
-                    <div style={{ width: `${percent}%` }}></div>
+                    <article>
+                        <span>Guardado</span>
+                        <strong>{money(summary.saving)}</strong>
+                    </article>
                 </div>
 
-                <small>
-                    Faltam {money(remaining)} para alcançar sua meta.
-                </small>
+                <div className="available-box">
+                    <span>Disponível</span>
+                    <strong>{money(summary.balance)}</strong>
+                </div>
             </section>
 
-            <section className="simple-grid">
-                <article>
-                    <p>Renda total</p>
-                    <strong>{money(summary.income)}</strong>
-                </article>
-
-                <article>
-                    <p>Gastos</p>
-                    <strong className="danger">{money(summary.expense)}</strong>
-                </article>
-
-                <article>
-                    <p>Guardado</p>
-                    <strong>{money(summary.saving)}</strong>
-                </article>
-
-                <article>
-                    <p>Meta</p>
-                    <strong>{money(goal)}</strong>
-                </article>
-            </section>
-
-            <section className="goal-card">
-                <div className="goal-header">
+            <section className="journey-card">
+                <div className="journey-header">
                     <div>
-                        <p>Objetivo financeiro</p>
-                        <h3>{user.goal_category || "Não definido"}</h3>
+                        <p>Sua jornada</p>
+                        <h2>Nível {user.level || 1}</h2>
+                        <span>Disciplina financeira</span>
                     </div>
 
-                    <span className="goal-badge">
-                        {user.competition_mode === "friends"
-                            ? "Com amigos"
-                            : user.competition_mode === "solo"
-                            ? "Individual"
-                            : user.competition_mode === "groups"
-                            ? "Grupo privado"
-                            : "Ranking público"}
-                    </span>
+                    <div className="level-badge">
+                        <Shield size={28} />
+                    </div>
                 </div>
 
-                <div className="goal-message">
-                    <Target size={18} />
-                    <p>
-                        Cada valor guardado aproxima você da sua conquista.
-                    </p>
+                <div className="progress-line">
+                    <div style={{ width: `${Math.min((Number(user.xp || 0) / 500) * 100, 100)}%` }} />
                 </div>
 
-                <div className="goal-progress-info">
-                    <span>Progresso da meta</span>
-                    <strong>{percent.toFixed(0)}%</strong>
-                </div>
-
-                <div className="progress-bar">
-                    <div style={{ width: `${percent}%` }}></div>
-                </div>
+                <small>{user.xp || 0} / 500 XP</small>
             </section>
 
-            <button
-                className="add-transaction-button"
-                onClick={() => navigate("/transaction")}
-            >
-                <Plus size={22} />
-                Adicionar transação
-            </button>
+            <section className="mini-cards">
+                <article>
+                    <Flame size={22} />
+                    <span>Streak</span>
+                    <strong>{user.streak || 0} dias</strong>
+                </article>
+
+                <article>
+                    <Star size={22} />
+                    <span>XP total</span>
+                    <strong>{user.xp || 0}</strong>
+                </article>
+            </section>
+
+            <section className="goal-section">
+                <div className="section-title">
+                    <h2>Objetivo atual</h2>
+                    <button onClick={() => navigate("/goals")}>Ver todos</button>
+                </div>
+
+                <article className="goal-card">
+                    <div className="goal-icon">
+                        <Target size={22} />
+                    </div>
+
+                    <div>
+                        <h3>{user.goal_category || "Meta financeira"}</h3>
+                        <p>{money(saved)} de {money(goal)}</p>
+
+                        <div className="progress-line">
+                            <div style={{ width: `${percent}%` }} />
+                        </div>
+                    </div>
+
+                    <strong>{percent.toFixed(0)}%</strong>
+                </article>
+            </section>
+
+            <section className="quick-actions">
+                <button onClick={() => navigate("/income")}>
+                    <Wallet size={22} />
+                    Receitas
+                </button>
+
+                <button onClick={() => navigate("/expenses")}>
+                    <CreditCard size={22} />
+                    Gastos
+                </button>
+
+                <button onClick={() => navigate("/savings")}>
+                    <PiggyBank size={22} />
+                    Guardado
+                </button>
+
+                <button onClick={() => navigate("/goals")}>
+                    <Target size={22} />
+                    Objetivos
+                </button>
+            </section>
+
+            <nav className="bottom-nav">
+                <button className="active" onClick={() => navigate("/dashboard")}>
+                    <Home size={21} />
+                    <span>Início</span>
+                </button>
+
+                <button onClick={() => navigate("/feed")}>
+                    <MessageCircle size={21} />
+                    <span>Feed</span>
+                </button>
+
+                <button className="main-action" onClick={() => navigate("/transaction")}>
+                    <Plus size={26} />
+                </button>
+
+                <button onClick={() => navigate("/ranking")}>
+                    <Trophy size={21} />
+                    <span>Ranking</span>
+                </button>
+                
+                <button onClick={() => navigate("/profile")}>
+                    <User size={21} />
+                    <span>Perfil</span>
+                </button>
+            </nav>
         </main>
     );
 }

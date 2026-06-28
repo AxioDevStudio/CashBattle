@@ -1,8 +1,7 @@
-function RankingCard({ position, name, xp, active }) {
+function RankingCard({ position, name, xp }) {
     return (
-        <article className={active ? "ranking-card active" : "ranking-card"}>
+        <article className="ranking-card">
             <strong>{position}</strong>
-
             <div>
                 <h4>{name}</h4>
                 <p>{xp}</p>

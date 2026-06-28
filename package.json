@@ -1,14 +1,16 @@
 {
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "lucide-react": "^1.21.0",
-    "pg": "^8.22.0"
+  "name": "cashbattle",
+  "private": true,
+  "scripts": {
+    "db": "docker start cashbattle_db || docker compose up -d",
+    "backend": "cd Backend && npm run dev",
+    "frontend": "cd Frontend && npm run dev",
+    "dev": "npm run db && concurrently \"npm run backend\" \"npm run frontend\""
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "concurrently": "^10.0.3"
+  },
+  "dependencies": {
+    "multer": "^2.2.0"
   }
 }

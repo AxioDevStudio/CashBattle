@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     ArrowLeft,
     Wallet,
@@ -9,21 +9,25 @@ import {
 } from "lucide-react";
 
 import api from "../../services/api";
-import "../../styles/transaction.css";
+import "../../styles/pages/transaction.css";
 
 function Transaction() {
     const navigate = useNavigate();
+    const { id } = useParams();
+
+    const isEditing = Boolean(id);
 
     const [type, setType] = useState("expense");
     const [amount, setAmount] = useState("");
     const [category, setCategory] = useState("Mercado");
     const [description, setDescription] = useState("");
+    const [goalId, setGoalId] = useState("");
 
     const [goals, setGoals] = useState([]);
-    const [goalId, setGoalId] = useState("");
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [pageLoading, setPageLoading] = useState(isEditing);
 
     const categories = {
         income: ["Salário", "Freelancer", "PIX", "Venda", "Outro"],
@@ -32,24 +36,41 @@ function Transaction() {
     };
 
     useEffect(() => {
-        async function loadGoals() {
+        async function loadData() {
             try {
                 const token = localStorage.getItem("cashbattle_token");
 
-                const response = await api.get("/goals", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
 
-                setGoals(response.data.goals || []);
+                const goalsResponse = await api.get("/goals", { headers });
+                setGoals(goalsResponse.data.goals || []);
+
+                if (isEditing) {
+                    const transactionResponse = await api.get(
+                        `/transactions/${id}`,
+                        { headers }
+                    );
+
+                    const transaction = transactionResponse.data.transaction;
+
+                    setType(transaction.type);
+                    setAmount(transaction.amount);
+                    setCategory(transaction.category || categories[transaction.type][0]);
+                    setDescription(transaction.description || "");
+                    setGoalId(transaction.goal_id || "");
+                }
             } catch (err) {
-                console.error("Erro ao carregar objetivos:", err);
+                console.error(err);
+                setError("Não foi possível carregar os dados.");
+            } finally {
+                setPageLoading(false);
             }
         }
 
-        loadGoals();
-    }, []);
+        loadData();
+    }, [id, isEditing]);
 
     function changeType(newType) {
         setType(newType);
@@ -73,23 +94,31 @@ function Transaction() {
         try {
             const token = localStorage.getItem("cashbattle_token");
 
-            await api.post(
-                "/transactions",
-                {
-                    type,
-                    amount: Number(amount),
-                    category,
-                    description,
-                    goalId: type === "saving" ? goalId || null : null
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
 
-            navigate("/dashboard");
+            const payload = {
+                type,
+                amount: Number(amount),
+                category,
+                description,
+                goalId: type === "saving" ? goalId || null : null,
+            };
+
+            if (isEditing) {
+                await api.put(`/transactions/${id}`, payload, { headers });
+            } else {
+                await api.post("/transactions", payload, { headers });
+            }
+
+            if (type === "income") {
+                navigate("/income");
+            } else if (type === "saving") {
+                navigate("/savings");
+            } else {
+                navigate("/expenses");
+            }
         } catch (err) {
             setError(
                 err.response?.data?.error ||
@@ -98,6 +127,14 @@ function Transaction() {
         } finally {
             setLoading(false);
         }
+    }
+
+    if (pageLoading) {
+        return (
+            <main className="transaction-page">
+                <p>Carregando transação...</p>
+            </main>
+        );
     }
 
     return (
@@ -109,14 +146,14 @@ function Transaction() {
 
                 <div>
                     <span>CashBattle</span>
-                    <h1>Nova transação</h1>
+                    <h1>{isEditing ? "Editar transação" : "Nova transação"}</h1>
                 </div>
             </header>
 
             <section className="type-selector">
                 <button
                     type="button"
-                    className={type === "income" ? "active" : ""}
+                    className={type === "income" ? "active income" : ""}
                     onClick={() => changeType("income")}
                 >
                     <TrendingUp size={20} />
@@ -134,7 +171,7 @@ function Transaction() {
 
                 <button
                     type="button"
-                    className={type === "saving" ? "active" : ""}
+                    className={type === "saving" ? "active saving" : ""}
                     onClick={() => changeType("saving")}
                 >
                     <PiggyBank size={20} />
@@ -199,7 +236,11 @@ function Transaction() {
                 {error && <span className="transaction-error">{error}</span>}
 
                 <button className="save-transaction" disabled={loading}>
-                    {loading ? "Salvando..." : "Salvar transação"}
+                    {loading
+                        ? "Salvando..."
+                        : isEditing
+                        ? "Salvar alterações"
+                        : "Salvar transação"}
                 </button>
             </form>
         </main>
