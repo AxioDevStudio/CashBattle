@@ -1,7 +1,3 @@
-Seu README já está bom, mas está um pouco desatualizado em relação ao que você implementou (feed, curtidas, comentários, upload de avatar, recuperação de senha por e-mail, etc.) e ainda possui funcionalidades marcadas como "em desenvolvimento" que já existem.
-
-Segue uma versão mais profissional e atualizada.
-
 <div align="center">
 
 # CashBattle
