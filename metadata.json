@@ -1,0 +1,6 @@
+{
+  "name": "CashBattle",
+  "description": "Gamified personal finance application for tracking income, expenses, goals, and community battles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
