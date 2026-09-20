@@ -1,0 +1,13 @@
+body.dark {
+    --color-background: #101722;
+    --color-surface: #182230;
+    --color-surface-soft: #111827;
+
+    --color-text: #f8fafc;
+    --color-text-muted: #a8b0bd;
+    --color-text-light: #7f8794;
+
+    --color-border: #273343;
+
+    --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
